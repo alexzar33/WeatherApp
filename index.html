@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+    <title>Weather in Your City</title>
+  </head>
+  <body>
+    <div id="app">
+      <!-- Search Bar -->
+      <div id="searchBar">
+        <input
+          type="text"
+          id="searchBarInput"
+          class="search__input_active"
+          placeholder="Search by City"
+        />
+        <button id="searchIcon">
+          <i class="fa fa-search" aria-hidden="true"></i>
+        </button>
+      </div>
+      <!-- Search list-->
+      <ul class="search-list" data-search-list>
+        <li data-search-item class="search-list__item">Item 1</li>
+        <li data-search-item class="search-list__item">Item 2</li>
+        <li data-search-item class="search-list__item">Item 3</li>
+        <li data-search-item class="search-list__item">Item 4</li>
+        <li data-search-item class="search-list__item">Item 5</li>
+      </ul>
+
+      <!--Date & City -->
+      <div id="info">
+        <p id="date"></p>
+        <h3 id="city"></h3>
+      </div>
+
+      <!-- Weather Image -->
+      <div id="tempImg"></div>
+
+      <!-- Description -->
+      <div id="description"></div>
+
+      <!-- Temp -->
+      <div id="temp"></div>
+
+      <!-- Extra INFO -->
+      <div id="extraInfo">
+        <div class="col">
+          <div class="info">
+            <h5>Highs</h5>
+            <p id="tempMax"></p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="info">
+            <h5>Lows</h5>
+            <p id="tempMin"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
