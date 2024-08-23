@@ -5,7 +5,7 @@
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
 
-#app {
+.app-container {
   position: relative;
   width: 414px;
   height: 420px;
@@ -33,13 +33,12 @@
   );
 }
 
-#searchBar {
+.search-bar {
   display: flex;
   padding: 0 40px;
   margin-bottom: 30px;
 }
-
-#searchBarInput {
+.search-bar__input {
   background-color: none;
   border: none;
   outline: none;
@@ -49,12 +48,12 @@
   border-bottom: solid 1px lightblue;
 }
 
-input::placeholder {
+.search-bar__input::placeholder {
   color: #fff;
   opacity: 0.6;
 }
 
-#searchIcon {
+.search-bar__button {
   border: none;
   background: transparent;
   color: #fff;
@@ -76,7 +75,8 @@ input::placeholder {
   text-transform: uppercase;
 }
 
-.search-list {
+.search-bar__list {
+  /*visibility: hidden;*/
   position: absolute;
   top: calc(40px + 1.5rem);
   width: 90%;
@@ -87,12 +87,12 @@ input::placeholder {
   right: 0;
 }
 
-.search-list__item {
+.search-bar__list-item {
   padding: 8px;
   font-size: 1.2rem;
   list-style: none;
 }
 
-.search__input_active {
+.search-bar__input_active {
   background-color: blueviolet;
 }

@@ -32,7 +32,7 @@ date.innerHTML = `${month}${day}, ${year}`;
 
 const app = document.getElementById("app");
 
-// everytime when a keyButton is pressed event listener is triggered and function runs
+// every time when a keyButton is pressed event listener is triggered and function runs
 // create a list with all matching cities underneath the searchbar
 
 const getCityCoordinates = async () => {
@@ -47,12 +47,38 @@ const getCityCoordinates = async () => {
         },
       }
     );
+
     const cityData = await cityDataFetch.json();
-    console.log(cityData, inputValue);
+    // iterate through an array and get required data for each item
+    // put this data to DOM for each item
+
+    cityData.results.forEach((city) => {
+      console.log(`hi${city.id}`);
+    });
+
+    console.log(
+      cityData,
+      inputValue,
+      typeof cityData,
+      cityData.results[0].country
+    );
   } catch (error) {
     console.log(error);
   }
 };
+
+const createTagLiForCity = (data) => {
+  let searchBarList = document.querySelector("[data-search-bar-list]");
+
+  let li = document.createElement("li");
+  li.innerHTML = data;
+  li.innerText = "hi";
+  li.setAttribute("data-search-bar-item", "");
+  li.classList.add("search-bar__list-item");
+  searchBarList.appendChild(li);
+  console.log("el is created");
+};
+
 searchBar.addEventListener("input", getCityCoordinates);
 /*searchBar.addEventListener("input", () => {
   const inputValue = document.getElementById("searchBarInput").value;
@@ -77,3 +103,8 @@ const getWeather = async () => {
   }
 };
 getWeather();
+
+// first remove all previous li
+// create new li each time a user input data
+// make each li active link so user can click on it
+createTagLiForCity();

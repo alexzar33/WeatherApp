@@ -15,55 +15,90 @@
     <title>Weather in Your City</title>
   </head>
   <body>
-    <div id="app">
+    <div id="app" class="app-container" data-app-container>
       <!-- Search Bar -->
-      <div id="searchBar">
+      <div id="searchBar" class="search-bar" data-search-bar>
         <input
           type="text"
           id="searchBarInput"
-          class="search__input_active"
+          class="search-bar__input"
           placeholder="Search by City"
+          data-search-bar-input
         />
-        <button id="searchIcon">
-          <i class="fa fa-search" aria-hidden="true"></i>
+        <button id="searchIcon" class="search-bar__button">
+          <i class="fa fa-search" aria-hidden="true" data-search-bar-button></i>
         </button>
+
+        <!-- Search list-->
+        <ul class="search-bar__list" data-search-bar-list>
+          <!--
+          <li
+            data-search-item
+            class="search-bar__list-item"
+            data-search-bar-item
+          >
+            Item 1
+          </li>
+          <li
+            data-search-item
+            class="search-bar__list-item"
+            data-search-bar-item
+          >
+            Item 2
+          </li>
+          <li
+            data-search-item
+            class="search-bar__list-item"
+            data-search-bar-item
+          >
+            Item 3
+          </li>
+          <li
+            data-search-item
+            class="search-bar__list-item"
+            data-search-bar-item
+          >
+            Item 4
+          </li>
+          <li
+            data-search-item
+            class="search-bar__list-item"
+            data-search-bar-item
+          >
+            Item 5
+          </li>
+        --></ul>
       </div>
-      <!-- Search list-->
-      <ul class="search-list" data-search-list>
-        <li data-search-item class="search-list__item">Item 1</li>
-        <li data-search-item class="search-list__item">Item 2</li>
-        <li data-search-item class="search-list__item">Item 3</li>
-        <li data-search-item class="search-list__item">Item 4</li>
-        <li data-search-item class="search-list__item">Item 5</li>
-      </ul>
 
-      <!--Date & City -->
-      <div id="info">
-        <p id="date"></p>
-        <h3 id="city"></h3>
-      </div>
-
-      <!-- Weather Image -->
-      <div id="tempImg"></div>
-
-      <!-- Description -->
-      <div id="description"></div>
-
-      <!-- Temp -->
-      <div id="temp"></div>
-
-      <!-- Extra INFO -->
-      <div id="extraInfo">
-        <div class="col">
-          <div class="info">
-            <h5>Highs</h5>
-            <p id="tempMax"></p>
-          </div>
+      <div class="weather">
+        <!--Date & City -->
+        <div id="info" class="weather__info-box">
+          <p id="date" class="weather__date"></p>
+          <h3 id="city" class="weather__city"></h3>
         </div>
-        <div class="col">
-          <div class="info">
-            <h5>Lows</h5>
-            <p id="tempMin"></p>
+
+        <!-- Weather Image -->
+        <div id="tempImg" class="weather__icon"></div>
+
+        <!-- Description -->
+        <div id="description" class="weather__description"></div>
+
+        <!-- Temp -->
+        <div id="temp" class="weather__temperature"></div>
+
+        <!-- Extra INFO -->
+        <div id="extraInfo" class="weather__extra-info">
+          <div class="weather__column">
+            <div class="weather__info">
+              <h5>Highs</h5>
+              <p id="tempMax" class="weather__max-temperature"></p>
+            </div>
+          </div>
+          <div class="weather__column">
+            <div class="weather__info">
+              <h5>Lows</h5>
+              <p id="tempMin" class="weather__min-temperature"></p>
+            </div>
           </div>
         </div>
       </div>
