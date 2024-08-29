@@ -35,11 +35,11 @@ const app = document.getElementById("app");
 // every time when a keyButton is pressed event listener is triggered and function runs
 // create a list with all matching cities underneath the searchbar
 
-const getCityCoordinates = async () => {
+const sendInputDataToApi = async () => {
   let inputValue = searchBar.value;
-  console.log(`hhhh${inputValue}`);
+  console.log(`test1${inputValue}`);
   try {
-    const cityDataFetch = await fetch(
+    const fetchCities = await fetch(
       `https://geocoding-api.open-meteo.com/v1/search?name=${inputValue}&count=10`,
       {
         headers: {
@@ -47,25 +47,49 @@ const getCityCoordinates = async () => {
         },
       }
     );
+    //console.log(fetchCities)
+    const a = await fetchCities.json();
+    //console.log(a);
+    return a;
 
-    const cityData = await cityDataFetch.json();
     // iterate through an array and get required data for each item
     // put this data to DOM for each item
-
-    cityData.results.forEach((city) => {
-      console.log(`hi${city.id}`);
-    });
-
-    console.log(
-      cityData,
-      inputValue,
-      typeof cityData,
-      cityData.results[0].country
-    );
   } catch (error) {
     console.log(error);
   }
 };
+
+//const cityData = new Object();
+
+//{
+// name: this.name,
+//latitude: this.latitude,
+//longitude: this.longitude,
+//countryCode: this.countryCode,
+//population: this.population,
+//country: this.country,
+//};
+const analyseDataFromApi = async (data) => {
+  //await data();
+  const listOfCities = await data();
+  console.log(`test2${listOfCities}`);
+  //listOfCities();
+
+  const iterateCitiesArray = listOfCities.results.forEach((city) => {
+    console.log(`hi${city.id}`);
+  });
+  await iterateCitiesArray();
+  //console.log(
+  //  listOfCities,
+  //   inputValue,
+  //   typeof listOfCities,
+  //   listOfCities.results[0].country
+  //);
+};
+
+//const produceResultFromApi = async (data, analyse) => {
+
+//}
 
 const createTagLiForCity = (data) => {
   let searchBarList = document.querySelector("[data-search-bar-list]");
@@ -79,7 +103,23 @@ const createTagLiForCity = (data) => {
   console.log("el is created");
 };
 
-searchBar.addEventListener("input", getCityCoordinates);
+//first check if input field has any values
+// if true proceed
+const inputFieldValChecker = async (func) => {
+  let inputValue = searchBar.value;
+  if (inputValue != "") {
+    await func();
+  } else {
+    console.log("not trues");
+  }
+};
+
+debugger;
+
+searchBar.addEventListener(
+  "input",
+  inputFieldValChecker(analyseDataFromApi(sendInputDataToApi))
+);
 /*searchBar.addEventListener("input", () => {
   const inputValue = document.getElementById("searchBarInput").value;
   console.log(`ssss${inputValue}`);
@@ -108,3 +148,8 @@ getWeather();
 // create new li each time a user input data
 // make each li active link so user can click on it
 createTagLiForCity();
+
+//console.log(sendInputDataToApi());
+
+// 1st - get the data from APA (wait)
+// 2nd - analyse the Date and use it for DOM
