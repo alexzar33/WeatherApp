@@ -39,7 +39,7 @@ const app = document.getElementById("app");
 // create a list with all matching cities underneath the searchbar
 
 const sendInputDataToApi = async () => {
-  //let inputValue = searchBar.value;
+  //let inputValue = "mos"; //SET inputValue BACK to normal!!!
   let inputValue = await searchBar.value;
   console.log(`test1 send data to API${inputValue}`);
   try {
@@ -63,6 +63,10 @@ const sendInputDataToApi = async () => {
   }
 };
 
+
+
+
+
 //const cityData = new Object();
 
 //{
@@ -74,11 +78,10 @@ const sendInputDataToApi = async () => {
 //country: this.country,
 //};
 const analyzeDataFromApi = async (data) => {
-  //await data();
   try {
   const listOfCities = await data();
+  removeTagLi()
   console.log(`test2 Analyze DATA from API${listOfCities}`);
-  //listOfCities();
 
   //create if-else to check if the value is defined or not.
   //if the value is undefined then remove data
@@ -94,12 +97,15 @@ const analyzeDataFromApi = async (data) => {
     country: city.country,
     code:  city.country_code,
     population: city.population,
+    latitude: city.latitude,
+    longitude: city.longitude,
     id: city.id
   }
-
-  let j = JSON.stringify(thisCityData)
+ let j = city.name +  " [" + city.country_code + "] ";
+ //let j =  city.name
+ //let j = JSON.stringify(thisCityData)
   console.log(j)
-  //let  tt = "a"
+  //let  tt = "a";
  createTagLiForCity(j);
 
   //console.log(thisCityData)
@@ -121,13 +127,22 @@ const analyzeDataFromApi = async (data) => {
 
 //}
 
+
+const removeTagLi = () => {
+  let searchBarList = document.querySelector("[data-search-bar-list]");
+  while (searchBarList.firstChild) {
+    searchBarList.removeChild(searchBarList.firstChild);
+  }
+}
+
 const createTagLiForCity = async(data) => {
-  let text = await data;
+  //let text = await data;
   let searchBarList = document.querySelector("[data-search-bar-list]");
 
   let li = document.createElement("li");
   //li.innerHTML = data;
-  li.innerText = await text / "hi";
+  //li.innerText = await text / "hi";
+  li.innerHTML = data;
   li.setAttribute("data-search-bar-item", "");
   li.classList.add("search-bar__list-item");
   searchBarList.appendChild(li);
@@ -138,38 +153,23 @@ const createTagLiForCity = async(data) => {
 // if true proceed
 
 
-// ---- temp disabled ----//
-/*
-const inputFieldValChecker = async (dataFromApi, inputData) => {
-  let inputValue = await searchBar.value;
-  if (inputValue != "") {
-    await dataFromApi(inputData);
-    console.log(inputValue);
-  } 
-  //else part is not needed here
-  else {
-    console.log("INPUT FIELD value is not true" + inputValue);
-    //searchBar.addEventListener("input")
-  }
-};
-*/ 
 
 //debugger;
 
-//the problem is that the fuc is invoked when u pass the arguments
+//the problem is that the func is invoked when u pass the arguments
 
-
-// --- temp disabled --//
-/*
-searchBar.addEventListener(
-  "input",
-  ()=>{inputFieldValChecker(analyzeDataFromApi,sendInputDataToApi)}
-);
-*/
 
 searchBar.addEventListener("input", ()=>{analyzeDataFromApi(sendInputDataToApi)});
 
+//function to test Event Listener Behavior. Emulate user input
+function testEventListenerBehavior () {
+let event = new Event ('input');
+searchBar.dispatchEvent(event);
+}
 
+//testEventListenerBehavior();
+
+// -------------end
 
 /*searchBar.addEventListener("input", () => {
   const inputValue = document.getElementById("searchBarInput").value;
