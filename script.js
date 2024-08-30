@@ -6,7 +6,10 @@ const description = document.getElementById("description");
 const tempMax = document.getElementById("tempMax");
 const tempMin = document.getElementById("tempMin");
 
+
+
 const searchBar = document.getElementById("searchBarInput");
+
 
 const months = [
   "January",
@@ -36,8 +39,9 @@ const app = document.getElementById("app");
 // create a list with all matching cities underneath the searchbar
 
 const sendInputDataToApi = async () => {
-  let inputValue = searchBar.value;
-  console.log(`test1${inputValue}`);
+  //let inputValue = searchBar.value;
+  let inputValue = await searchBar.value;
+  console.log(`test1 send data to API${inputValue}`);
   try {
     const fetchCities = await fetch(
       `https://geocoding-api.open-meteo.com/v1/search?name=${inputValue}&count=10`,
@@ -49,7 +53,7 @@ const sendInputDataToApi = async () => {
     );
     //console.log(fetchCities)
     const a = await fetchCities.json();
-    //console.log(a);
+    console.log(a);
     return a;
 
     // iterate through an array and get required data for each item
@@ -69,57 +73,104 @@ const sendInputDataToApi = async () => {
 //population: this.population,
 //country: this.country,
 //};
-const analyseDataFromApi = async (data) => {
+const analyzeDataFromApi = async (data) => {
   //await data();
+  try {
   const listOfCities = await data();
-  console.log(`test2${listOfCities}`);
+  console.log(`test2 Analyze DATA from API${listOfCities}`);
   //listOfCities();
 
-  const iterateCitiesArray = listOfCities.results.forEach((city) => {
-    console.log(`hi${city.id}`);
+  //create if-else to check if the value is defined or not.
+  //if the value is undefined then remove data
+ await listOfCities.results.forEach((city) => {
+    //console.log(`ID: ${city.id} NAME: ${city.name} COUNTRY: ${city.country} CODE: ${city.country_code} POPULATION: ${city.population}`);
+  
+  
+  //create an object with data
+  //convert this object data and send to inner HTML (li)
+
+  let thisCityData = {
+    name: city.name,
+    country: city.country,
+    code:  city.country_code,
+    population: city.population,
+    id: city.id
+  }
+
+  let j = JSON.stringify(thisCityData)
+  console.log(j)
+  //let  tt = "a"
+ createTagLiForCity(j);
+
+  //console.log(thisCityData)
+  
   });
-  await iterateCitiesArray();
+  //await iterateCitiesArray();
   //console.log(
   //  listOfCities,
   //   inputValue,
   //   typeof listOfCities,
   //   listOfCities.results[0].country
   //);
+  } catch(error){
+    console.log(`No matches were found at API${error}`)
+  }
 };
 
-//const produceResultFromApi = async (data, analyse) => {
+//const produceResultFromApi = async (data, analyze) => {
 
 //}
 
-const createTagLiForCity = (data) => {
+const createTagLiForCity = async(data) => {
+  let text = await data;
   let searchBarList = document.querySelector("[data-search-bar-list]");
 
   let li = document.createElement("li");
-  li.innerHTML = data;
-  li.innerText = "hi";
+  //li.innerHTML = data;
+  li.innerText = await text / "hi";
   li.setAttribute("data-search-bar-item", "");
   li.classList.add("search-bar__list-item");
   searchBarList.appendChild(li);
-  console.log("el is created");
+  console.log("el is created" + data);
 };
 
 //first check if input field has any values
 // if true proceed
-const inputFieldValChecker = async (func) => {
-  let inputValue = searchBar.value;
+
+
+// ---- temp disabled ----//
+/*
+const inputFieldValChecker = async (dataFromApi, inputData) => {
+  let inputValue = await searchBar.value;
   if (inputValue != "") {
-    await func();
-  } else {
-    console.log("not trues");
+    await dataFromApi(inputData);
+    console.log(inputValue);
+  } 
+  //else part is not needed here
+  else {
+    console.log("INPUT FIELD value is not true" + inputValue);
+    //searchBar.addEventListener("input")
   }
 };
+*/ 
 
-debugger;
+//debugger;
 
+//the problem is that the fuc is invoked when u pass the arguments
+
+
+// --- temp disabled --//
+/*
 searchBar.addEventListener(
   "input",
-  inputFieldValChecker(analyseDataFromApi(sendInputDataToApi))
+  ()=>{inputFieldValChecker(analyzeDataFromApi,sendInputDataToApi)}
 );
+*/
+
+searchBar.addEventListener("input", ()=>{analyzeDataFromApi(sendInputDataToApi)});
+
+
+
 /*searchBar.addEventListener("input", () => {
   const inputValue = document.getElementById("searchBarInput").value;
   console.log(`ssss${inputValue}`);
@@ -145,11 +196,12 @@ const getWeather = async () => {
 getWeather();
 
 // first remove all previous li
+//before removing a li check if APIdata were changed
 // create new li each time a user input data
 // make each li active link so user can click on it
-createTagLiForCity();
+//createTagLiForCity();
 
 //console.log(sendInputDataToApi());
 
 // 1st - get the data from APA (wait)
-// 2nd - analyse the Date and use it for DOM
+// 2nd - analyze the Date and use it for DOM
