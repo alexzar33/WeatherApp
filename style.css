@@ -14,7 +14,7 @@
   text-align: center;
   padding: 40px 0px;
   overflow: hidden;
-  border-radius: 45px;
+  /*border-radius: 45px;*/
   background-image: linear-gradient(
     325deg,
     hsl(240deg 97% 55%) 0%,
@@ -91,6 +91,12 @@
   padding: 8px;
   font-size: 1.2rem;
   list-style: none;
+  cursor:pointer;
+}
+
+.search-bar__list-item:hover{
+  background-color: aquamarine;
+
 }
 
 .search-bar__input_active {
