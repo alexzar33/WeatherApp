@@ -35,11 +35,8 @@ date.innerHTML = `${month}${day}, ${year}`;
 
 const app = document.getElementById("app");
 
-// every time when a keyButton is pressed event listener is triggered and function runs
-// create a list with all matching cities underneath the searchbar
-
+// function that sends user input value to API to try to find a required city
 const sendInputDataToApi = async () => {
-  //let inputValue = "mos"; //SET inputValue BACK to normal!!!
   let inputValue = await searchBar.value;
   console.log(`test1 send data to API${inputValue}`);
   try {
@@ -51,32 +48,19 @@ const sendInputDataToApi = async () => {
         },
       }
     );
-    //console.log(fetchCities)
     const a = await fetchCities.json();
     console.log(a);
     return a;
 
-    // iterate through an array and get required data for each item
-    // put this data to DOM for each item
+ 
   } catch (error) {
     console.log(error);
   }
 };
 
 
-
-
-
-//const cityData = new Object();
-
-//{
-// name: this.name,
-//latitude: this.latitude,
-//longitude: this.longitude,
-//countryCode: this.countryCode,
-//population: this.population,
-//country: this.country,
-//};
+// function that receives the data from API  and analyzes it
+// then structures and displays this data at the DOM
 const analyzeDataFromApi = async (data) => {
   try {
   const listOfCities = await data();
@@ -89,8 +73,7 @@ const analyzeDataFromApi = async (data) => {
     //console.log(`ID: ${city.id} NAME: ${city.name} COUNTRY: ${city.country} CODE: ${city.country_code} POPULATION: ${city.population}`);
   
   
-  //create an object with data
-  //convert this object data and send to inner HTML (li)
+  
 
   let thisCityData = {
     name: city.name,
@@ -102,32 +85,20 @@ const analyzeDataFromApi = async (data) => {
     id: city.id
   }
  let j = city.name +  " [" + city.country_code + "] ";
- //let j =  city.name
  //let j = JSON.stringify(thisCityData)
-  console.log(j)
-  //let  tt = "a";
- createTagLiForCity(j);
-
-  //console.log(thisCityData)
+  console.log(j);
+  createTagLiForCity(j,addEventListenerForTagLi,thisCityData);
   
   });
-  //await iterateCitiesArray();
-  //console.log(
-  //  listOfCities,
-  //   inputValue,
-  //   typeof listOfCities,
-  //   listOfCities.results[0].country
-  //);
+
+  //return thisCityData;
+
   } catch(error){
     console.log(`No matches were found at API${error}`)
   }
 };
 
-//const produceResultFromApi = async (data, analyze) => {
-
-//}
-
-
+// function that removes all child elements from UL (list)
 const removeTagLi = () => {
   let searchBarList = document.querySelector("[data-search-bar-list]");
   while (searchBarList.firstChild) {
@@ -135,51 +106,65 @@ const removeTagLi = () => {
   }
 }
 
-const createTagLiForCity = async(data) => {
-  //let text = await data;
+// function that creates a LI element, passes API data to it and then displays it at DOM
+const createTagLiForCity = async(data,eventListener,dataExt) => {
   let searchBarList = document.querySelector("[data-search-bar-list]");
 
   let li = document.createElement("li");
-  //li.innerHTML = data;
-  //li.innerText = await text / "hi";
   li.innerHTML = data;
   li.setAttribute("data-search-bar-item", "");
   li.classList.add("search-bar__list-item");
+  eventListener(li,dataExt);
   searchBarList.appendChild(li);
-  console.log("el is created" + data);
+  console.log("el is created" + dataExt);
 };
-
-//first check if input field has any values
-// if true proceed
-
-
 
 //debugger;
 
-//the problem is that the func is invoked when u pass the arguments
-
-
+// event listener that invokes API-related functions on input
 searchBar.addEventListener("input", ()=>{analyzeDataFromApi(sendInputDataToApi)});
 
-//function to test Event Listener Behavior. Emulate user input
+// function that tests Event Listener Behavior. It emulates user input
 function testEventListenerBehavior () {
 let event = new Event ('input');
 searchBar.dispatchEvent(event);
 }
 
+
+// function that adds eventListener for tag <li>
+// when clicked        - get coordinates for this city
+//                     - activate getWeather function
+// then fetching the DATA from API and fill it to the DOM
+//clear all <li> tags
+//clear input field value when the data is fetched and displayed at the DOM
+function addEventListenerForTagLi (liTag, data){
+  liTag.addEventListener ("click", ()=>{getWeather(data)})
+
+}
+
+
+
+
+
 //testEventListenerBehavior();
 
 // -------------end
 
-/*searchBar.addEventListener("input", () => {
-  const inputValue = document.getElementById("searchBarInput").value;
-  console.log(`ssss${inputValue}`);
-}); */
 
-const getWeather = async () => {
+// function that gets weather data from API
+// needs to be reworked and completed
+const getWeather = async (data) => {
+  //let testData = await data
+  //console.log("GetWeather Test " + testData)
+  //convert data to int and limit numbers to 2 after point x.xx (Number().toFixed())
+  let  latitude = await data.latitude
+  let  longitude = await data.longitude
+  let city = await data.name
+  //latitude = await data.latitude;
+  //longitude = await data.longitude;
   try {
     const weatherDataFetch = await fetch(
-      "https://api.open-meteo.com/v1/dwd-icon?latitude=52.52&longitude=13.41&current=temperature_2m,is_day,weather_code&daily=weather_code,apparent_temperature_max,apparent_temperature_min",
+      `https://api.open-meteo.com/v1/dwd-icon?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,is_day,weather_code&daily=weather_code,apparent_temperature_max,apparent_temperature_min`,
       {
         headers: {
           Accept: "application/json",
@@ -187,21 +172,30 @@ const getWeather = async () => {
       }
     );
     const weatherData = await weatherDataFetch.json();
-    console.log(weatherData);
-    city.innerHTML;
+    const currentWeather = await weatherData.current.temperature_2m
+    console.log(`The weather for ${city} is ${currentWeather}`);
+    console.log(weatherData)
+    //city.innerHTML;
   } catch (error) {
     console.log(error);
   }
 };
-getWeather();
 
+//getWeather();
+
+
+//create an object with data
+  //convert this object data and send to inner HTML (li)
+
+   // iterate through an array and get required data for each item
+    // put this data to DOM for each item
+
+// every time when a keyButton is pressed event listener is triggered and function runs
+// create a list with all matching cities underneath the searchbar
 // first remove all previous li
 //before removing a li check if APIdata were changed
 // create new li each time a user input data
 // make each li active link so user can click on it
-//createTagLiForCity();
-
-//console.log(sendInputDataToApi());
 
 // 1st - get the data from APA (wait)
 // 2nd - analyze the Date and use it for DOM
