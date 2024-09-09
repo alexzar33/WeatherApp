@@ -37,46 +37,73 @@ let day = dateObj.getDate();
 let year = dateObj.getFullYear();
 //console.log(dateObj)
 
-date.innerHTML = `${month} ${day}, ${year}`;
+date.innerHTML = `${month} ${day}, ${year}`; 
 
 const app = document.getElementById("app");
 
 // function that sends user input value to API to try to find a required city
 const sendInputDataToApi = async () => {
+
   let inputValue = await searchBarInput.value;
-  console.log(`test1 send data to API${inputValue}`);
-  try {
-    const fetchCities = await fetch(
-      `https://geocoding-api.open-meteo.com/v1/search?name=${inputValue}&count=10`,
-      {
-        headers: {
-          Accept: "application/json",
-        },
-      }
-    );
-    const a = await fetchCities.json();
-    console.log(a);
-    return a;
-
- 
-  } catch (error) {
-    console.log(error);
+  console.log("Data sent to API:")
+  console.log(inputValue);
+   
+  let fetchedData = await fetch(
+  `https://geocoding-api.open-meteo.com/v1/search?name=${inputValue}&count=10`,
+  {
+    headers: {
+     Accept: "application/json",
+    },
   }
-};
+);
 
+return await fetchedData.json();
+// const a = await fetchedData.json();
+// return a;
+};
 
 // function that receives the data from API  and analyzes it
 // then structures and displays this data at the DOM
 const analyzeDataFromApi = async (data) => {
-  try {
-  const listOfCities = await data();
-  removeTagLi()
-  console.log(`test2 Analyze DATA from API${listOfCities}`);
+  
+  let fetchedData = await data;
+  console.log("Analyzed data from API");
+  console.log (fetchedData)
 
-  //create if-else to check if the value is defined or not.
-  //if the value is undefined then remove data
- await listOfCities.results.forEach((city) => {
-    //console.log(`ID: ${city.id} NAME: ${city.name} COUNTRY: ${city.country} CODE: ${city.country_code} POPULATION: ${city.population}`);
+  let listOfCities = await fetchedData.results.map((city) => {
+
+    let cityData = {
+      name: city.name,
+      country: city.country,
+      code:  city.country_code,
+      population: city.population,
+      latitude: city.latitude,
+      longitude: city.longitude,
+      id: city.id
+    }  
+    return cityData;
+    });
+  return listOfCities
+};
+
+//function that displays fetched data at DOM
+const displayDataAtDom = async () => {
+  try {
+  let fetchedData = await sendInputDataToApi();
+  removeTagLi();
+  console.log("Fetched Data:")
+  console.log (fetchedData)
+  let listOfCities = await analyzeDataFromApi(await fetchedData);
+  console.log('List of cities:')
+  console.log(listOfCities)
+  
+  await listOfCities.forEach((city)=> {
+    let j = city.name +  " [" + city.code + "] ";
+    createTagLiForCity(j,addEventListenerForTagLi,city);
+  }
+
+/*   await listOfCities.results.forEach((city) => {
+   
   
   
   
@@ -95,29 +122,27 @@ const analyzeDataFromApi = async (data) => {
   console.log(j);
   createTagLiForCity(j,addEventListenerForTagLi,thisCityData);
   
-  });
+  }); */
 
-  //return thisCityData;
+)
 
-  } catch(error){
-    console.log(`No matches were found at API${error}`)
   }
-};
+  catch (err) {
+    console.log (err)
+  }
+}
 
 // function that gets weather data from API
 // needs to be reworked and completed
 const getWeather = async (data) => {
-  //convert data to int and limit numbers to 2 after point x.xx (Number().toFixed())
-  
-  
-  let  latitude = await data.latitude
-  let  longitude = await data.longitude
+
+  let latitude = await data.latitude
+  let longitude = await data.longitude
   let currentCity = await data.name
 
   let weatherApiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,is_day,weather_code,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,wind_speed_10m_max,wind_direction_10m_dominant&timezone=auto`
-  //let weatherApiUrl = `https://api.open-meteo.com/v1/dwd-icon?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,is_day,weather_code&daily=weather_code,apparent_temperature_max,apparent_temperature_min`
-  try {
-    const weatherDataFetch = await fetch(weatherApiUrl
+  
+    let weatherDataFetch = await fetch(weatherApiUrl
       ,
       {
         headers: {
@@ -125,11 +150,11 @@ const getWeather = async (data) => {
         },
       }
     );
+    
     //console.log (weatherDataFetch.status)
-
     if (weatherDataFetch.status == 200) {
-      const weatherData = await weatherDataFetch.json();
-      const currentWeather = {
+      let weatherData = await weatherDataFetch.json();
+      let currentWeather = {
         temperature: weatherData.current.temperature_2m,
         dayOrNight: weatherData.current.is_day,
         weatherCode: weatherData.current.weather_code,
@@ -137,7 +162,7 @@ const getWeather = async (data) => {
         windSpeed: weatherData.wind_speed_10m
       }
 
-      const dailyWeather = {
+      let dailyWeather = {
         sunrise: weatherData.daily.sunrise,
         sunset: weatherData.daily.sunset,
         tempMax: weatherData.daily.temperature_2m_max,
@@ -157,14 +182,12 @@ const getWeather = async (data) => {
     //add data to the DOM
     city.innerHTML = currentCity;
     temp.innerHTML = currentWeather.temperature;
-    
+    return new Array (currentWeather, dailyWeather)
     }
     
     
     
-  } catch (error) {
-    console.log(error);
-  }
+ 
 };
 
 
@@ -193,7 +216,7 @@ const createTagLiForCity = async(data,eventListener,dataExt) => {
 //debugger;
 
 // event listener that invokes API-related functions on input
-searchBarInput.addEventListener("input", ()=>{analyzeDataFromApi(sendInputDataToApi)});
+searchBarInput.addEventListener("input", displayDataAtDom);
 
 // function that tests Event Listener Behavior. It emulates user input
 function testEventListenerBehavior () {
@@ -203,18 +226,21 @@ searchBarInput.dispatchEvent(event);
 
 
 // function that adds eventListener for tag <li>
-// when clicked        - get coordinates for this city
-//                     - activate getWeather function
+// when clicked        - gets coordinates for this city
+//                     - activates getWeather function
+//                     - removes <li> tags
 // then fetch the DATA from API and fill it to the DOM
 //clear all <li> tags
 //clear input field value when the data is fetched and displayed at the DOM
 function addEventListenerForTagLi (liTag, data){
-  liTag.addEventListener ("click", ()=>{getWeather(data), removeTagLi()})
+  liTag.addEventListener ("click", ()=>{getWeather(data), removeTagLi(), clearInputValue()})
 
 }
 
 
-
+const clearInputValue = () => {
+  searchBarInput.value = ""
+}
 
 
 //testEventListenerBehavior();
