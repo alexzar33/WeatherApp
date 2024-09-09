@@ -86,6 +86,11 @@ const analyzeDataFromApi = async (data) => {
   return listOfCities
 };
 
+const getFlagIcon = (code) => {
+
+  return `https://flagcdn.com/${code}.svg`
+
+}
 //function that displays fetched data at DOM
 const displayDataAtDom = async () => {
   try {
@@ -98,8 +103,10 @@ const displayDataAtDom = async () => {
   console.log(listOfCities)
   
   await listOfCities.forEach((city)=> {
-    let j = city.name +  " [" + city.code + "] ";
-    createTagLiForCity(j,addEventListenerForTagLi,city);
+    //let j = city.name +  " [" + getFlagIcon(city.code) + "] ";
+    let code = getFlagIcon(city.code).toLowerCase()
+    createTagLiForCity(city.name,addEventListenerForTagLi,city,code);
+    console.log(code)
   }
 
 /*   await listOfCities.results.forEach((city) => {
@@ -201,7 +208,7 @@ const removeTagLi = () => {
 }
 
 // function that creates a LI element, passes API data to it and then displays it at DOM
-const createTagLiForCity = async(data,eventListener,dataExt) => {
+const createTagLiForCity = async(data,eventListener,dataExt, dataExt2) => {
   let searchBarList = document.querySelector("[data-search-bar__list]");
 
   let li = document.createElement("li");
@@ -209,9 +216,16 @@ const createTagLiForCity = async(data,eventListener,dataExt) => {
   li.setAttribute("data-search-bar-item", "");
   li.classList.add("search-bar__list-item");
   eventListener(li,dataExt);
+//create img
+  let img = document.createElement('img')
+  img.setAttribute('src', dataExt2)
+  img.classList.add('search-bar__list-img')
+  li.appendChild(img)
+
   searchBarList.appendChild(li);
   console.log("el is created" + dataExt);
 };
+
 
 //debugger;
 

@@ -94,9 +94,16 @@
   cursor:pointer;
 }
 
+
 .search-bar__list-item:hover{
   background-color: aquamarine;
 
+}
+
+
+.search-bar__list-img {
+  height: 1rem;
+  padding-left:8px;
 }
 
 .search-bar__input_active {
