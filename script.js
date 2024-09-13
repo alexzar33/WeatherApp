@@ -1,7 +1,11 @@
 const date = document.querySelector("[data-current-weather__date]");
 const city = document.querySelector("[data-current-weather__city]");
-const temp = document.querySelector("[data-current-weather__temperature]");
-const tempImg = document.querySelector("[data-current-weather__icon]");
+const currentTemp = document.querySelector(
+  "[data-current-weather__temperature]"
+);
+const currentWeatherIcon = document.querySelector(
+  "[data-current-weather__icon]"
+);
 const description = document.querySelector(
   "[data-current-weather__description]"
 );
@@ -135,6 +139,19 @@ const displayDataAtDom = async () => {
   }
 };
 
+/* //!universal displayDataAtDom() function
+
+pass object as a parameter
+
+const displayDataAtDom = async (data) => {
+  let fetchedData = await data.fetchedData();
+ (data.removeEl) ? data.removeEl() : console.log ("no DOM Element need to be removed")
+
+  }
+
+
+*/
+
 // function that gets weather data from API
 // needs to be reworked and completed
 const getWeather = async (data) => {
@@ -181,8 +198,12 @@ const getWeather = async (data) => {
     );
 
     //add data to the DOM
-    city.innerHTML = currentCity;
-    temp.innerHTML = currentWeather.temperature;
+    city.textContent = currentCity;
+    currentTemp.textContent = `${currentWeather.temperature} °`;
+    //currentWeatherIcon.innerHTML = "";
+    currentWeatherIcon.className="current-weather__icon"
+    chooseWeatherIcon(currentWeather,"",currentWeatherIcon,"currentWeather")
+    //currentWeather.weatherCode;
     return new Array(currentWeather, dailyWeather);
   }
 };
@@ -211,6 +232,12 @@ const addWeeklyWeatherReportToDom = async (dataFunc, data) => {
     let dayContainer = div(); //!container for a day weather
     dayContainer.classList.add("weekly-weather__day-container"); //*set class for a day container
     let weatherIcon = div(); //!weather icon for a day
+    //switch - choose weather icon
+    chooseWeatherIcon(info, i, weatherIcon, "dailyWeather");
+   
+    //!old code
+    /* 
+    
     switch (await info[1].weatherCode[i]) {
       case 0: //clear sky
         weatherIcon.classList.add(
@@ -301,9 +328,11 @@ const addWeeklyWeatherReportToDom = async (dataFunc, data) => {
         );
         break;
     }
+
+   */
     let dayTemperature = div(); //!day Temp
     dayTemperature.classList.add("weekly-weather__day-temperature");
-    dayTemperature.innerHTML = `${info[1].tempMin[i]} - ${info[1].tempMax[i]} &deg`;
+    dayTemperature.textContent = `${info[1].tempMin[i]} - ${info[1].tempMax[i]} °`;
     let dayOfTheWeek = div(); //!date
     dayOfTheWeek.classList.add("weekly-weather__day");
     //format Date
@@ -313,7 +342,7 @@ const addWeeklyWeatherReportToDom = async (dataFunc, data) => {
     let dayFormatted = dateFormatted.getDate();
 
     //dayOfTheWeek.innerHTML = info[1].time[i];
-    dayOfTheWeek.innerHTML = `${monthFormatted} ${dayFormatted}`;
+    dayOfTheWeek.textContent = `${monthFormatted} ${dayFormatted}`;
 
     //*append all children to parent element
 
@@ -322,6 +351,7 @@ const addWeeklyWeatherReportToDom = async (dataFunc, data) => {
     dayContainer.appendChild(dayOfTheWeek);
     weeklyWeatherContainer.appendChild(dayContainer);
   }
+  removeChildElemIfTrue(appContainer,"data-weekly-weather")
   appContainer.appendChild(weeklyWeatherContainer);
 };
 
@@ -491,7 +521,7 @@ function addEventListenerForTagLi(liTag, data) {
   liTag.addEventListener("click", async () => {
     removeTagLi(),
       clearInputValue(),
-      removeWeeklyWeatherReport(),
+      // removeWeeklyWeatherReport(), //! removeChildElemIfTrue() does the same thing
       getWeather(data),
       await addWeeklyWeatherReportToDom(getWeather, data);
   });
@@ -532,3 +562,119 @@ function testDiv() {
 }
 
 //testDiv()
+
+const chooseWeatherIcon = (data, i=0, domElement, forecastType) => {
+  const typeOfIcon = async (data) => {
+    switch (await data) {
+      case 0: //clear sky
+        domElement.classList.add(
+          "weekly-weather__weather-icon",
+          "fa-solid",
+          "fa-sun"
+        );
+        break;
+      case 1: //mainly clear
+      case 2: //partly cloudy
+        domElement.classList.add(
+          "weekly-weather__weather-icon",
+          "fa-solid",
+          "fa-cloud-sun"
+        );
+        break;
+      case 3: //overcast
+        domElement.classList.add(
+          "weekly-weather__weather-icon",
+          "fa-solid",
+          "fa-cloud"
+        );
+        break;
+      case 45: //fog
+      case 48: //depositing rime fog
+        domElement.classList.add(
+          "weekly-weather__weather-icon",
+          "fa-solid",
+          "fa-smog"
+        );
+        break;
+      case 51: //drizzle light
+      case 53: //drizzle moderate
+      case 55: //drizzle dense
+        domElement.classList.add(
+          "weekly-weather__weather-icon",
+          "fa-solid",
+          "fa-cloud-showers-heavy"
+        );
+        break;
+      case 56: //freezing drizzle - light
+      case 57: //freezing  drizzle - dense
+        domElement.classList.add(
+          "weekly-weather__weather-icon",
+          "fa-solid",
+          "fa-snowflake"
+        );
+        break;
+      case 61: //rain slight
+      case 63: //rain moderate
+      case 65: //rain heavy
+        domElement.classList.add(
+          "weekly-weather__weather-icon",
+          "fa-solid",
+          "fa-cloud-sun-rain"
+        );
+        break;
+      case 66: //freezing rain - light
+      case 67: //freezing rain - heavy
+      case 71: //snow fall - slight
+      case 73: //snow fall - moderate
+      case 75: //snow fall - heavy
+      case 77: //snow grains
+        domElement.classList.add(
+          "weekly-weather__weather-icon",
+          "fa-solid",
+          "fa-snowflake"
+        );
+        break;
+      case 80: //rain showers - slight
+      case 81: //rain showers - moderate
+      case 82: //rain showers - violent
+      case 85: //snow showers - slight
+      case 86: //snow showers - heavy
+        domElement.classList.add(
+          "weekly-weather__weather-icon",
+          "fa-solid",
+          "fa-cloud-showers-heavy"
+        );
+        break;
+      case 95: //thunderstorm - slight or moderate
+      case 96: //thunderstorm with slight hail
+      case 99: //thunderstorm with heavy hail
+        domElement.classList.add(
+          "weekly-weather__weather-icon",
+          "fa-solid",
+          "fa-cloud-bolt"
+        );
+        break;
+    }
+  };
+
+  if (forecastType == "currentWeather") {
+    typeOfIcon(data.weatherCode); //change to data[0].weatherCode[i], now returned Obj
+    console.log('test icon - current')
+    console.log(data)
+  } else if (forecastType == "dailyWeather") {
+    typeOfIcon(data[1].weatherCode[i]);
+    console.log('test icon - daily')
+    console.log(data[1].weatherCode[i])
+  }
+};
+
+
+const  removeChildElemIfTrue = (parentEl, childSelector) => {
+  let childEl = document.querySelector(`[${childSelector}]`)
+  if (parentEl.contains(childEl)) {
+    childEl.remove()
+  console.log('Element is removed')
+  }
+
+  else (console.log('no elements to remove'))
+}
