@@ -41,7 +41,7 @@ let day = dateObj.getDate();
 let year = dateObj.getFullYear();
 //console.log(dateObj)
 
-date.innerHTML = `${month} ${day}, ${year}`;
+date.textContent = `${month} ${day}, ${year}`;
 
 const app = document.getElementById("app");
 
@@ -62,8 +62,6 @@ const sendInputDataToApi = async () => {
   );
 
   return await fetchedData.json();
-  // const a = await fetchedData.json();
-  // return a;
 };
 
 // function that receives the data from API  and analyzes it
@@ -94,66 +92,31 @@ const getFlagIcon = (code) => {
   return `https://flagcdn.com/${code}.svg`;
 };
 //function that displays fetched data at DOM
-const displayDataAtDom = async () => {
+const displaySearchBarListAtDom = async () => {
   try {
     let fetchedData = await sendInputDataToApi();
-    removeTagLi();
+    // removeChildElemIfTrue(searchBarList,"data-search-bar-item")
+
+    removeDomElement("data-search-bar-item");
+    //removeTagLi();
     console.log("Fetched Data:");
     console.log(fetchedData);
     let listOfCities = await analyzeDataFromApi(await fetchedData);
     console.log("List of cities:");
     console.log(listOfCities);
 
-    await listOfCities.forEach(
-      (city) => {
-        //let j = city.name +  " [" + getFlagIcon(city.code) + "] ";
-        let code = getFlagIcon(city.code).toLowerCase();
-        createTagLiForCity(city.name, addEventListenerForTagLi, city, code);
-        console.log(code);
-      }
-
-      /*   await listOfCities.results.forEach((city) => {
-   
-  
-  
-  
-
-  let thisCityData = {
-    name: city.name,
-    country: city.country,
-    code:  city.country_code,
-    population: city.population,
-    latitude: city.latitude,
-    longitude: city.longitude,
-    id: city.id
-  }
- let j = city.name +  " [" + city.country_code + "] ";
- //let j = JSON.stringify(thisCityData)
-  console.log(j);
-  createTagLiForCity(j,addEventListenerForTagLi,thisCityData);
-  
-  }); */
-    );
+    displayCityAtSearchBarList(listOfCities);
   } catch (err) {
     console.log(err);
   }
 };
 
-/* //!universal displayDataAtDom() function
-
-pass object as a parameter
-
-const displayDataAtDom = async (data) => {
-  let fetchedData = await data.fetchedData();
- (data.removeEl) ? data.removeEl() : console.log ("no DOM Element need to be removed")
-
-  }
-
-
-*/
+// TODO create universal displayElAtDom function
+// TODO review removeTagLi(), removeWeeklyWeatherReport(), removeChildElIfTrue(). Check if they do the same thing
 
 // function that gets weather data from API
 // needs to be reworked and completed
+//! need to be refactored, separate function for displaying content at DOM
 const getWeather = async (data) => {
   let latitude = await data.latitude;
   let longitude = await data.longitude;
@@ -201,13 +164,14 @@ const getWeather = async (data) => {
     city.textContent = currentCity;
     currentTemp.textContent = `${currentWeather.temperature} °`;
     //currentWeatherIcon.innerHTML = "";
-    currentWeatherIcon.className="current-weather__icon"
-    chooseWeatherIcon(currentWeather,"",currentWeatherIcon,"currentWeather")
+    currentWeatherIcon.className = "current-weather__icon";
+    chooseWeatherIcon(currentWeather, "", currentWeatherIcon, "currentWeather");
     //currentWeather.weatherCode;
     return new Array(currentWeather, dailyWeather);
   }
 };
 
+//! need to be refactored. Too complex
 const addWeeklyWeatherReportToDom = async (dataFunc, data) => {
   let info = await dataFunc(data);
   console.log("INFO");
@@ -221,12 +185,6 @@ const addWeeklyWeatherReportToDom = async (dataFunc, data) => {
     "weekly-weather",
     "app-container__weekly-weather"
   );
-  //* use while to create forecast card for a day
-
-  // array[1]   - array of objects, index  [1] contains Arrays
-  // weatherCode
-  // tempMin
-  // tempMax
 
   for (i = 0; i <= 6; i++) {
     let dayContainer = div(); //!container for a day weather
@@ -234,102 +192,7 @@ const addWeeklyWeatherReportToDom = async (dataFunc, data) => {
     let weatherIcon = div(); //!weather icon for a day
     //switch - choose weather icon
     chooseWeatherIcon(info, i, weatherIcon, "dailyWeather");
-   
-    //!old code
-    /* 
-    
-    switch (await info[1].weatherCode[i]) {
-      case 0: //clear sky
-        weatherIcon.classList.add(
-          "weekly-weather__weather-icon",
-          "fa-solid",
-          "fa-sun"
-        );
-        break;
-      case 1: //mainly clear
-      case 2: //partly cloudy
-        weatherIcon.classList.add(
-          "weekly-weather__weather-icon",
-          "fa-solid",
-          "fa-cloud-sun"
-        );
-        break;
-      case 3: //overcast
-        weatherIcon.classList.add(
-          "weekly-weather__weather-icon",
-          "fa-solid",
-          "fa-cloud"
-        );
-        break;
-      case 45: //fog
-      case 48: //depositing rime fog
-        weatherIcon.classList.add(
-          "weekly-weather__weather-icon",
-          "fa-solid",
-          "fa-smog"
-        );
-        break;
-      case 51: //drizzle light
-      case 53: //drizzle moderate
-      case 55: //drizzle dense
-        weatherIcon.classList.add(
-          "weekly-weather__weather-icon",
-          "fa-solid",
-          "fa-cloud-showers-heavy"
-        );
-        break;
-      case 56: //freezing drizzle - light
-      case 57: //freezing  drizzle - dense
-        weatherIcon.classList.add(
-          "weekly-weather__weather-icon",
-          "fa-solid",
-          "fa-snowflake"
-        );
-        break;
-      case 61: //rain slight
-      case 63: //rain moderate
-      case 65: //rain heavy
-        weatherIcon.classList.add(
-          "weekly-weather__weather-icon",
-          "fa-solid",
-          "fa-cloud-sun-rain"
-        );
-        break;
-      case 66: //freezing rain - light
-      case 67: //freezing rain - heavy
-      case 71: //snow fall - slight
-      case 73: //snow fall - moderate
-      case 75: //snow fall - heavy
-      case 77: //snow grains
-        weatherIcon.classList.add(
-          "weekly-weather__weather-icon",
-          "fa-solid",
-          "fa-snowflake"
-        );
-        break;
-      case 80: //rain showers - slight
-      case 81: //rain showers - moderate
-      case 82: //rain showers - violent
-      case 85: //snow showers - slight
-      case 86: //snow showers - heavy
-        weatherIcon.classList.add(
-          "weekly-weather__weather-icon",
-          "fa-solid",
-          "fa-cloud-showers-heavy"
-        );
-        break;
-      case 95: //thunderstorm - slight or moderate
-      case 96: //thunderstorm with slight hail
-      case 99: //thunderstorm with heavy hail
-        weatherIcon.classList.add(
-          "weekly-weather__weather-icon",
-          "fa-solid",
-          "fa-cloud-bolt"
-        );
-        break;
-    }
 
-   */
     let dayTemperature = div(); //!day Temp
     dayTemperature.classList.add("weekly-weather__day-temperature");
     dayTemperature.textContent = `${info[1].tempMin[i]} - ${info[1].tempMax[i]} °`;
@@ -351,121 +214,10 @@ const addWeeklyWeatherReportToDom = async (dataFunc, data) => {
     dayContainer.appendChild(dayOfTheWeek);
     weeklyWeatherContainer.appendChild(dayContainer);
   }
-  removeChildElemIfTrue(appContainer,"data-weekly-weather")
+  // removeChildElemIfTrue(appContainer, "data-weekly-weather");
+  removeDomElement("data-weekly-weather");
   appContainer.appendChild(weeklyWeatherContainer);
 };
-
-//! snippet of OLD code
-/*for (i = 0; i <= info[1].length; i++) {
-    let dayContainer = div(); //!container for a day weather
-    dayContainer.classList.add("weekly-weather__day-container"); //*set class for a day container
-    let weatherIcon = div(); //!weather icon for a day
-    switch (await info[1].weatherCode.length) {
-      case 0: //clear sky
-        weatherIcon.classList.add(
-          "weekly-weather__weather-icon",
-          "fa-solid",
-          "fa-sun"
-        );
-        break;
-      case 1: //mainly clear
-      case 2: //partly cloudy
-        weatherIcon.classList.add(
-          "weekly-weather__weather-icon",
-          "fa-solid",
-          "fa-cloud-sun"
-        );
-        break;
-      case 3: //overcast
-        weatherIcon.classList.add(
-          "weekly-weather__weather-icon",
-          "fa-solid",
-          "fa-cloud"
-        );
-        break;
-      case 45: //fog
-      case 48: //depositing rime fog
-        weatherIcon.classList.add(
-          "weekly-weather__weather-icon",
-          "fa-solid",
-          "fa-smog"
-        );
-        break;
-      case 51: //drizzle light
-      case 53: //drizzle moderate
-      case 55: //drizzle dense
-        weatherIcon.classList.add(
-          "weekly-weather__weather-icon",
-          "fa-solid",
-          "fa-cloud-showers-heavy"
-        );
-        break;
-      case 56: //freezing drizzle - light
-      case 57: //freezing  drizzle - dense
-        weatherIcon.classList.add(
-          "weekly-weather__weather-icon",
-          "fa-solid",
-          "fa-snowflake"
-        );
-        break;
-      case 61: //rain slight
-      case 63: //rain moderate
-      case 65: //rain heavy
-        weatherIcon.classList.add(
-          "weekly-weather__weather-icon",
-          "fa-solid",
-          "fa-cloud-sun-rain"
-        );
-        break;
-      case 66: //freezing rain - light
-      case 67: //freezing rain - heavy
-      case 71: //snow fall - slight
-      case 73: //snow fall - moderate
-      case 75: //snow fall - heavy
-      case 77: //snow grains
-        weatherIcon.classList.add(
-          "weekly-weather__weather-icon",
-          "fa-solid",
-          "fa-snowflake"
-        );
-        break;
-      case 80: //rain showers - slight
-      case 81: //rain showers - moderate
-      case 82: //rain showers - violent
-      case 85: //snow showers - slight
-      case 86: //snow showers - heavy
-        weatherIcon.classList.add(
-          "weekly-weather__weather-icon",
-          "fa-solid",
-          "fa-cloud-showers-heavy"
-        );
-        break;
-      case 95: //thunderstorm - slight or moderate
-      case 96: //thunderstorm with slight hail
-      case 99: //thunderstorm with heavy hail
-        weatherIcon.classList.add(
-          "weekly-weather__weather-icon",
-          "fa-solid",
-          "fa-cloud-bolt"
-        );
-        break;
-    }
-    let dayTemperature = div(); //!day Temp
-    dayTemperature.classList.add("weekly-weather__day-temperature");
-    dayTemperature.innerHTML = `${info[0][i].tempMin} - ${info[0][i].tempMax} &deg`;
-    let dayOfTheWeek = div(); //!date
-    dayOfTheWeek.classList.add("weekly-weather__day");
-    dayOfTheWeek.innerHTML = info[0][i].time;
-
-    //*append all children to parent element
-
-    dayContainer.appendChild(weatherIcon);
-    dayContainer.appendChild(dayTemperature);
-    dayContainer.appendChild(dayOfTheWeek);
-    weeklyWeatherContainer.appendChild(dayContainer);
-    appContainer.appendChild(weeklyWeatherContainer);
-  }
-};*/
 
 // function that removes all child elements from UL (list)
 const removeTagLi = () => {
@@ -502,7 +254,7 @@ const createTagLiForCity = async (data, eventListener, dataExt, dataExt2) => {
 //debugger;
 
 // event listener that invokes API-related functions on input
-searchBarInput.addEventListener("input", displayDataAtDom);
+searchBarInput.addEventListener("input", displaySearchBarListAtDom);
 
 // function that tests Event Listener Behavior. It emulates user input
 function testEventListenerBehavior() {
@@ -510,18 +262,12 @@ function testEventListenerBehavior() {
   searchBarInput.dispatchEvent(event);
 }
 
-// function that adds eventListener for tag <li>
-// when clicked        - gets coordinates for this city
-//                     - activates getWeather function
-//                     - removes <li> tags
-// then fetch the DATA from API and fill it to the DOM
-//clear all <li> tags
-//clear input field value when the data is fetched and displayed at the DOM
 function addEventListenerForTagLi(liTag, data) {
   liTag.addEventListener("click", async () => {
-    removeTagLi(),
-      clearInputValue(),
-      // removeWeeklyWeatherReport(), //! removeChildElemIfTrue() does the same thing
+    // removeTagLi(),
+    removeDomElement("data-search-bar-item");
+    clearInputValue(),
+      // removeWeeklyWeatherReport()
       getWeather(data),
       await addWeeklyWeatherReportToDom(getWeather, data);
   });
@@ -532,24 +278,6 @@ const clearInputValue = () => {
 };
 
 //testEventListenerBehavior();
-
-// -------------end
-
-//create an object with data
-//convert this object data and send to inner HTML (li)
-
-// iterate through an array and get required data for each item
-// put this data to DOM for each item
-
-// every time when a keyButton is pressed event listener is triggered and function runs
-// create a list with all matching cities underneath the searchbar
-// first remove all previous li
-//before removing a li check if APIdata were changed
-// create new li each time a user input data
-// make each li active link so user can click on it
-
-// 1st - get the data from APA (wait)
-// 2nd - analyze the Date and use it for DOM
 
 function testDiv() {
   let div = () => {
@@ -562,8 +290,8 @@ function testDiv() {
 }
 
 //testDiv()
-
-const chooseWeatherIcon = (data, i=0, domElement, forecastType) => {
+//! what is a purpose of nesting a const func() inside a const func()?
+const chooseWeatherIcon = (data, i = 0, domElement, forecastType) => {
   const typeOfIcon = async (data) => {
     switch (await data) {
       case 0: //clear sky
@@ -659,22 +387,39 @@ const chooseWeatherIcon = (data, i=0, domElement, forecastType) => {
 
   if (forecastType == "currentWeather") {
     typeOfIcon(data.weatherCode); //change to data[0].weatherCode[i], now returned Obj
-    console.log('test icon - current')
-    console.log(data)
+    console.log("test icon - current");
+    console.log(data);
   } else if (forecastType == "dailyWeather") {
     typeOfIcon(data[1].weatherCode[i]);
-    console.log('test icon - daily')
-    console.log(data[1].weatherCode[i])
+    console.log("test icon - daily");
+    console.log(data[1].weatherCode[i]);
   }
 };
 
-
-const  removeChildElemIfTrue = (parentEl, childSelector) => {
-  let childEl = document.querySelector(`[${childSelector}]`)
+const removeChildElemIfTrue = (parentEl, childSelector) => {
+  let childEl = document.querySelector(`[${childSelector}]`);
   if (parentEl.contains(childEl)) {
-    childEl.remove()
-  console.log('Element is removed')
-  }
+    childEl.remove();
+    console.log(`Element ${childEl} is removed`);
+  } else console.log("no elements to remove");
+};
 
-  else (console.log('no elements to remove'))
-}
+const removeDomElement = (selector) => {
+  let element = document.querySelectorAll(`[${selector}]`);
+  if (element.length > 0) {
+    element.forEach((el) => {
+      el.remove();
+      console.log(`Dom element ${el} is removed`);
+    });
+  }
+  console.log("No DOM element need to be removed");
+  console.log(element);
+};
+
+const displayCityAtSearchBarList = async (arrOfCities) => {
+  await arrOfCities.forEach((city) => {
+    let code = getFlagIcon(city.code).toLowerCase();
+    createTagLiForCity(city.name, addEventListenerForTagLi, city, code);
+    console.log(code);
+  });
+};
