@@ -221,16 +221,24 @@ const createTagLiForCity = async (data, eventListener, dataExt, dataExt2) => {
   let searchBarList = document.querySelector("[data-search-bar__list]");
 
   let li = document.createElement("li");
-  li.innerHTML = data;
+  // li.innerHTML = data; //!
   li.setAttribute("data-search-bar-item", "");
   li.classList.add("search-bar__list-item");
   eventListener(li, dataExt);
+ 
+  
   //create img
   let img = document.createElement("img");
   img.setAttribute("src", dataExt2);
   img.classList.add("search-bar__list-img");
   li.appendChild(img);
 
+  //create span for text content (instead of  placing text directly in <li>)
+  let span = document.createElement("span");
+  span.textContent = data; 
+  span.classList.add("search-bar__list-text")
+  li.appendChild(span)
+  //
   searchBarList.appendChild(li);
   console.log("el is created" + dataExt);
 };
@@ -251,6 +259,7 @@ function addEventListenerForTagLi(liTag, data) {
     removeDomElement("data-search-bar-item");
     clearInputValue(),
       getWeather(data),
+      setFocusToInputField(),
       await addWeeklyWeatherReportToDom(getWeather, data);
   });
 }
@@ -399,3 +408,6 @@ const displayCityAtSearchBarList = async (arrOfCities) => {
     console.log(code);
   });
 };
+const setFocusToInputField = () => {
+  searchBarInput.focus();
+}
