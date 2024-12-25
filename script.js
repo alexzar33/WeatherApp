@@ -95,10 +95,8 @@ const getFlagIcon = (code) => {
 const displaySearchBarListAtDom = async () => {
   try {
     let fetchedData = await sendInputDataToApi();
-    // removeChildElemIfTrue(searchBarList,"data-search-bar-item")
 
     removeDomElement("data-search-bar-item");
-    //removeTagLi();
     console.log("Fetched Data:");
     console.log(fetchedData);
     let listOfCities = await analyzeDataFromApi(await fetchedData);
@@ -112,7 +110,6 @@ const displaySearchBarListAtDom = async () => {
 };
 
 // TODO create universal displayElAtDom function
-// TODO review removeTagLi(), removeWeeklyWeatherReport(), removeChildElIfTrue(). Check if they do the same thing
 
 // function that gets weather data from API
 // needs to be reworked and completed
@@ -214,24 +211,11 @@ const addWeeklyWeatherReportToDom = async (dataFunc, data) => {
     dayContainer.appendChild(dayOfTheWeek);
     weeklyWeatherContainer.appendChild(dayContainer);
   }
-  // removeChildElemIfTrue(appContainer, "data-weekly-weather");
+
   removeDomElement("data-weekly-weather");
   appContainer.appendChild(weeklyWeatherContainer);
 };
 
-// function that removes all child elements from UL (list)
-const removeTagLi = () => {
-  let searchBarList = document.querySelector("[data-search-bar__list]");
-  while (searchBarList.firstChild) {
-    searchBarList.removeChild(searchBarList.firstChild);
-  }
-};
-const removeWeeklyWeatherReport = () => {
-  let weeklyReport = document.querySelector("[data-weekly-weather]");
-  weeklyReport
-    ? weeklyReport.remove()
-    : console.log("Weekly weather report isn't found");
-};
 // function that creates a LI element, passes API data to it and then displays it at DOM
 const createTagLiForCity = async (data, eventListener, dataExt, dataExt2) => {
   let searchBarList = document.querySelector("[data-search-bar__list]");
@@ -264,10 +248,8 @@ function testEventListenerBehavior() {
 
 function addEventListenerForTagLi(liTag, data) {
   liTag.addEventListener("click", async () => {
-    // removeTagLi(),
     removeDomElement("data-search-bar-item");
     clearInputValue(),
-      // removeWeeklyWeatherReport()
       getWeather(data),
       await addWeeklyWeatherReportToDom(getWeather, data);
   });
@@ -396,13 +378,7 @@ const chooseWeatherIcon = (data, i = 0, domElement, forecastType) => {
   }
 };
 
-const removeChildElemIfTrue = (parentEl, childSelector) => {
-  let childEl = document.querySelector(`[${childSelector}]`);
-  if (parentEl.contains(childEl)) {
-    childEl.remove();
-    console.log(`Element ${childEl} is removed`);
-  } else console.log("no elements to remove");
-};
+
 
 const removeDomElement = (selector) => {
   let element = document.querySelectorAll(`[${selector}]`);
