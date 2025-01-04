@@ -12,7 +12,9 @@
   flex-direction: column;
   /* justify-content: space-between; */
   width: 602px;
-  height: 520px;
+  
+  height: auto;
+  min-height: 520px;
   margin: 20px auto;
   text-align: center;
   padding: 40px 0px 0px;
@@ -164,6 +166,8 @@
 
 .current-weather__city {
   font-size: 3rem;
+  padding-top: 1rem;
+  padding-bottom: 2rem;
 }
 
 .current-weather__icon {
@@ -173,7 +177,12 @@
 
 .current-weather__temperature {
   font-size: 2rem;
+  padding-bottom: 3rem;
 }
+.current-weather__container {
+  margin-bottom: 40px;
+}
+
 .weekly-weather {
   display: flex;
   overflow: hidden;
@@ -185,6 +194,7 @@
   background: linear-gradient(to right bottom, #bdc2ff, #ffffff);
   /* max-width: calc(602px / 7); */
   min-width: calc(602px / 7);
+  /* min-width: calc(16*1ch); */
 }
 
 .weekly-weather__weather-icon {
@@ -218,21 +228,26 @@
     /* width:100vw; */
     width:auto;
     display:flex;
+    /* display:grid;
+    grid-template-columns: 1fr 1fr 1fr; */
     justify-content:space-between;
-    align-items:center;
+    padding:0.5rem 1rem;
+    align-items: center;
     /* font-size: 2.5rem; */
   }
-
-  .current-weather_icon {
-    font-size: 8rem;
+.weekly-weather__weather-icon{
+  font-size: 2.5rem;
+  /* justify-self: start; */
+}
+  .weekly-weather__day {
+    font-weight: bold;
+    /* justify-self: start; */
   }
-  .weekly-weather__weather-icon {
-    font-size: 2.5rem;
-  }
+  
   .weekly-weather__day-temperature{
     font-size: 1.3rem;
+    font-weight: bold;
+    /* justify-self: start; */
   }
-.current-weather__container {
-  margin-bottom: 40px;
-}
+
 }

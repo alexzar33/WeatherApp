@@ -187,6 +187,7 @@ const addWeeklyWeatherReportToDom = async (dataFunc, data) => {
     let dayContainer = div(); //!container for a day weather
     dayContainer.classList.add("weekly-weather__day-container"); //*set class for a day container
     let weatherIcon = div(); //!weather icon for a day
+    weatherIcon.classList.add("weekly-weather__weather-icon");
     //switch - choose weather icon
     chooseWeatherIcon(info, i, weatherIcon, "dailyWeather");
 
@@ -287,7 +288,7 @@ const chooseWeatherIcon = (data, i = 0, domElement, forecastType) => {
     switch (await data) {
       case 0: //clear sky
         domElement.classList.add(
-          "weekly-weather__weather-icon",
+          // "weekly-weather__weather-icon",
           "fa-solid",
           "fa-sun"
         );
@@ -295,14 +296,14 @@ const chooseWeatherIcon = (data, i = 0, domElement, forecastType) => {
       case 1: //mainly clear
       case 2: //partly cloudy
         domElement.classList.add(
-          "weekly-weather__weather-icon",
+          // "weekly-weather__weather-icon",
           "fa-solid",
           "fa-cloud-sun"
         );
         break;
       case 3: //overcast
         domElement.classList.add(
-          "weekly-weather__weather-icon",
+          // "weekly-weather__weather-icon",
           "fa-solid",
           "fa-cloud"
         );
@@ -310,7 +311,7 @@ const chooseWeatherIcon = (data, i = 0, domElement, forecastType) => {
       case 45: //fog
       case 48: //depositing rime fog
         domElement.classList.add(
-          "weekly-weather__weather-icon",
+          // "weekly-weather__weather-icon",
           "fa-solid",
           "fa-smog"
         );
@@ -319,7 +320,7 @@ const chooseWeatherIcon = (data, i = 0, domElement, forecastType) => {
       case 53: //drizzle moderate
       case 55: //drizzle dense
         domElement.classList.add(
-          "weekly-weather__weather-icon",
+          // "weekly-weather__weather-icon",
           "fa-solid",
           "fa-cloud-showers-heavy"
         );
@@ -327,7 +328,7 @@ const chooseWeatherIcon = (data, i = 0, domElement, forecastType) => {
       case 56: //freezing drizzle - light
       case 57: //freezing  drizzle - dense
         domElement.classList.add(
-          "weekly-weather__weather-icon",
+          // "weekly-weather__weather-icon",
           "fa-solid",
           "fa-snowflake"
         );
@@ -336,7 +337,7 @@ const chooseWeatherIcon = (data, i = 0, domElement, forecastType) => {
       case 63: //rain moderate
       case 65: //rain heavy
         domElement.classList.add(
-          "weekly-weather__weather-icon",
+          // "weekly-weather__weather-icon",
           "fa-solid",
           "fa-cloud-sun-rain"
         );
@@ -348,7 +349,7 @@ const chooseWeatherIcon = (data, i = 0, domElement, forecastType) => {
       case 75: //snow fall - heavy
       case 77: //snow grains
         domElement.classList.add(
-          "weekly-weather__weather-icon",
+          // "weekly-weather__weather-icon",
           "fa-solid",
           "fa-snowflake"
         );
@@ -359,7 +360,7 @@ const chooseWeatherIcon = (data, i = 0, domElement, forecastType) => {
       case 85: //snow showers - slight
       case 86: //snow showers - heavy
         domElement.classList.add(
-          "weekly-weather__weather-icon",
+          // "weekly-weather__weather-icon",
           "fa-solid",
           "fa-cloud-showers-heavy"
         );
@@ -368,7 +369,7 @@ const chooseWeatherIcon = (data, i = 0, domElement, forecastType) => {
       case 96: //thunderstorm with slight hail
       case 99: //thunderstorm with heavy hail
         domElement.classList.add(
-          "weekly-weather__weather-icon",
+          // "weekly-weather__weather-icon",
           "fa-solid",
           "fa-cloud-bolt"
         );
