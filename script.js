@@ -411,3 +411,5 @@ const displayCityAtSearchBarList = async (arrOfCities) => {
 const setFocusToInputField = () => {
   searchBarInput.focus();
 }
+
+

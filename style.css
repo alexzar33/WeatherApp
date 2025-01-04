@@ -183,7 +183,8 @@
   /* flex-direction: column; */
   padding: 8px;
   background: linear-gradient(to right bottom, #bdc2ff, #ffffff);
-  max-width: calc(602px / 7);
+  /* max-width: calc(602px / 7); */
+  min-width: calc(602px / 7);
 }
 
 .weekly-weather__weather-icon {
@@ -196,4 +197,42 @@
 
 .weekly-weather__day {
   font-size: 1rem;
+}
+
+
+@media only screen and (max-width:602px) {
+  .app-container {
+    width: auto;
+    height: 100vh;
+    margin: 0;
+    /* min-height: 520px; */
+    /* max-height: max-content; */
+  }
+  .weekly-weather{
+    flex-direction: column;
+    /* align-content: stretch; */
+    overflow: visible;
+    width:100%;
+  }
+  .weekly-weather__day-container {
+    /* width:100vw; */
+    width:auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    /* font-size: 2.5rem; */
+  }
+
+  .current-weather_icon {
+    font-size: 8rem;
+  }
+  .weekly-weather__weather-icon {
+    font-size: 2.5rem;
+  }
+  .weekly-weather__day-temperature{
+    font-size: 1.3rem;
+  }
+.current-weather__container {
+  margin-bottom: 40px;
+}
 }
